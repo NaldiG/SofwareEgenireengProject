@@ -5,6 +5,10 @@
  */
 package software.engineering.project;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -29,8 +33,20 @@ public class MainScene {
     
     Scene scene;
     GridPane root;
+    User currentUser;
 
-    public MainScene() {
+    public MainScene(String username, String password) {
+        try{
+            Connection con = DBConn.getConnection();
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery("Select * from users where name = '" + username + "' and password = '" + password + "'");
+            rs.next();
+            currentUser = new User(rs.getInt("id"), rs.getInt("subscription"),rs.getInt("role"), rs.getString("name"), rs.getString("password"), rs.getString("quote"));
+            
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+        }
         
         root = new GridPane();
         root.setAlignment(Pos.CENTER);
@@ -49,7 +65,7 @@ public class MainScene {
             
             Stage secondaryStage = new Stage();
             
-            QuizScene qs = new QuizScene();
+            QuizScene qs = new QuizScene(currentUser.getId());
             
             secondaryStage.setScene(qs.getScene());
             secondaryStage.setTitle("Quiz");

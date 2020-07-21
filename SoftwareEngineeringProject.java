@@ -75,10 +75,9 @@ public class SoftwareEngineeringProject extends Application {
             String username = userTextField.getText();
             String password = pwBox.getText();
             
-            MainScene ms = new MainScene();
-            
             if(authenticateUser(username, password)){
                 
+                MainScene ms = new MainScene(username, password);
                 primaryStage.setTitle("Main Menu");
                 primaryStage.setScene(ms.getScene());
                 

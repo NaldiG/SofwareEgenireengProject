@@ -37,7 +37,7 @@ public class QuizScene {
     GridPane root;
     JSONArray categories;
 
-    public QuizScene() {
+    public QuizScene(int userId) {
         
         root = new GridPane();
         root.setAlignment(Pos.CENTER);
