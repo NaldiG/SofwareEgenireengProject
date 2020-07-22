@@ -36,7 +36,6 @@ public class SoftwareEngineeringProject extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        DBConn.getConnection();
         Scene scene;
         GridPane root;
         root = new GridPane();
@@ -72,10 +71,12 @@ public class SoftwareEngineeringProject extends Application {
         btn.setOnAction(event ->
         {
             
+            DBConn connection = new DBConn();
+            
             String username = userTextField.getText();
             String password = pwBox.getText();
             
-            if(authenticateUser(username, password)){
+            if(connection.authenticateUser(username, password)){
                 
                 MainScene ms = new MainScene(username, password);
                 primaryStage.setTitle("Main Menu");
@@ -89,15 +90,7 @@ public class SoftwareEngineeringProject extends Application {
             }
             
             
-            /*if(User.checkUser(username, password)) {
-                System.out.println("Welcome");
-                primaryStage.close();
-                primaryStage.setScene(mscene.getScene());
-                primaryStage.show();
-            }
-            else {
-                System.out.println("Invalid user");
-            }*/
+            
             
         });
         
@@ -113,23 +106,6 @@ public class SoftwareEngineeringProject extends Application {
         launch(args);
     }
     
-    public boolean authenticateUser(String username, String password){
-        
-        try{
-            Connection con = DBConn.getConnection();
-            Statement stm = con.createStatement();
-            ResultSet rs = stm.executeQuery("Select * from users where name = '" + username + "' and password = '" + password + "'");
-            if(rs.next()){
-                System.out.println(rs.getString("name"));
-                return true;
-            }else{
-                return false;
-            }
-        }
-        catch(SQLException ex){
-            return false;
-        }
-        
-    }
+    
     
 }

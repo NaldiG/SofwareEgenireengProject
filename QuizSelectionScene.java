@@ -31,13 +31,14 @@ import org.json.JSONObject;
  *
  * @author ASUS
  */
-public class QuizScene {
+public class QuizSelectionScene {
     
     Scene scene;
     GridPane root;
-    JSONArray categories;
 
-    public QuizScene(int userId) {
+    public QuizSelectionScene(int userId) {
+        
+        QuizModel quiz = new QuizModel();
         
         root = new GridPane();
         root.setAlignment(Pos.CENTER);
@@ -53,30 +54,15 @@ public class QuizScene {
         Label difficultyLbl = new Label("Difficulty:");
         final Text actiontarget = new Text();
         
+        ArrayList categories = quiz.getCategories();
         
-        
-        try {
-            InputStream is = new URL("https://opentdb.com/api_category.php").openStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String line = reader.readLine();
-            
-            JSONObject json = new JSONObject(line);
-            categories = json.getJSONArray("trivia_categories");
-            for(int i = 0; i < categories.length(); i++) {
-                
-                JSONObject category = categories.getJSONObject(i);
-                
-                categoryCombo.getItems().add(category.get("name").toString());
-            }
-            
-        }
-        catch(IOException  ioe) {
-            System.out.println("IO problem");
+        for(int i = 0; i < categories.size(); i++){
+            categoryCombo.getItems().add(categories.get(i).toString());
         }
         
-        difficultyCombo.getItems().add("Easy");
-        difficultyCombo.getItems().add("Medium");
-        difficultyCombo.getItems().add("Hard");
+        difficultyCombo.getItems().add("easy");
+        difficultyCombo.getItems().add("medium");
+        difficultyCombo.getItems().add("hard");
         
         Button btn = new Button("Next");
         HBox hbBtn = new HBox(10);
@@ -92,19 +78,13 @@ public class QuizScene {
         
         btn.setOnAction(event ->
         {
-            String categoryId = "9";
+            
             if(categoryCombo.getValue() != null && difficultyCombo.getValue() != null){
-                for(int i = 0; i < categories.length(); i++) {
+
+                QuestionModel questionModel = new QuestionModel(quiz.getQuiz(categoryCombo.getValue().toString(), difficultyCombo.getValue().toString()), userId);
+                QuestionScene questionScene = new QuestionScene(questionModel);
+                MainScene.setSecondaryScene(questionScene.getScene(), "Question");
                 
-                    JSONObject category = categories.getJSONObject(i);
-                    if(categoryCombo.getValue().toString().equals(category.get("name"))){
-                        categoryId = category.get("id").toString();
-                    }
-                    
-                }
-                actiontarget.setFill(Color.FIREBRICK);
-                actiontarget.setText("https://opentdb.com/api.php?amount=5&category=" + categoryId + "&difficulty=" + difficultyCombo.getValue().toString() + "&type=multiple "
-                        + "\nhttps://opentdb.com/api.php?amount=5&category=" + categoryId + "&difficulty=" + difficultyCombo.getValue().toString() + "&type=boolean");
             }else{
                 actiontarget.setFill(Color.FIREBRICK);
                 actiontarget.setText("Please select category and difficulty");

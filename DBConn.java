@@ -7,7 +7,9 @@ package software.engineering.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,8 +20,8 @@ import java.util.logging.Logger;
 public class DBConn {
     
     private static Connection conn = null;
-    
-    public static Connection getConnection() {
+
+    public DBConn() {
         if(conn == null) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -34,6 +36,43 @@ public class DBConn {
                 Logger.getLogger(DBConn.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public User getUser (String username, String password){
+        try{
+
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("Select * from users where name = '" + username + "' and password = '" + password + "'");
+            rs.next();
+            return new User(rs.getInt("id"), rs.getInt("subscription"),rs.getInt("role"), rs.getString("name"), rs.getString("password"), rs.getString("quote"));
+            
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+            return null;
+        }
+    }
+    
+    public boolean authenticateUser(String username, String password){
+        
+        try{
+            
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("Select * from users where name = '" + username + "' and password = '" + password + "'");
+            if(rs.next()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        catch(SQLException ex){
+            return false;
+        }
+        
+    }
+    
+    public Connection getConnection() {
+        
         return conn;
     }
     

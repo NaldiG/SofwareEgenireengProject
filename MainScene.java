@@ -34,19 +34,12 @@ public class MainScene {
     Scene scene;
     GridPane root;
     User currentUser;
+    static Stage secondaryStage = new Stage();
 
     public MainScene(String username, String password) {
-        try{
-            Connection con = DBConn.getConnection();
-            Statement stm = con.createStatement();
-            ResultSet rs = stm.executeQuery("Select * from users where name = '" + username + "' and password = '" + password + "'");
-            rs.next();
-            currentUser = new User(rs.getInt("id"), rs.getInt("subscription"),rs.getInt("role"), rs.getString("name"), rs.getString("password"), rs.getString("quote"));
-            
-        }
-        catch(SQLException ex){
-            System.err.println(ex);
-        }
+        
+        DBConn connection = new DBConn();
+        currentUser = connection.getUser(username, password);
         
         root = new GridPane();
         root.setAlignment(Pos.CENTER);
@@ -62,13 +55,11 @@ public class MainScene {
           
         btn.setOnAction(event ->
         {
-            
-            Stage secondaryStage = new Stage();
-            
-            QuizScene qs = new QuizScene(currentUser.getId());
+
+            QuizSelectionScene qs = new QuizSelectionScene(currentUser.getId());
             
             secondaryStage.setScene(qs.getScene());
-            secondaryStage.setTitle("Quiz");
+            secondaryStage.setTitle("Quiz Selection");
             secondaryStage.show();
             
         });
@@ -79,6 +70,9 @@ public class MainScene {
         return scene;
     }
     
-    
+    public static void setSecondaryScene(Scene scene, String title){
+        secondaryStage.setScene(scene);
+        secondaryStage.setTitle(title);
+    }
     
 }
