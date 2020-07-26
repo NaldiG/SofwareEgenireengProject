@@ -104,6 +104,7 @@ public class QuestionScene {
                     QuestionScene qscene = new QuestionScene(model);
                     MainScene.setSecondaryScene(qscene.getScene(), "Question");
                 }else{
+                    model.saveScore();
                     ResultScene resultScene = new ResultScene(model);
                     MainScene.setSecondaryScene(resultScene.getScene(), "Result");
                 }

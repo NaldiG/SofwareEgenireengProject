@@ -106,7 +106,13 @@ public class QuestionModel {
             return false;
         }
     }
+    
     public String getScore(){
         return "" + quiz.getScore() + "/10";
+    }
+    
+    public void saveScore(){
+        DBConn con = new DBConn();
+        con.insertScore(quiz.getScore(), userId, quiz.getCategory(), quiz.getDifficulty());
     }
 }

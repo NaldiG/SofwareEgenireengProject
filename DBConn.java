@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,4 +77,48 @@ public class DBConn {
         return conn;
     }
     
+    public void insertScore(int score, int userId, String category, String difficulty){
+        try{
+            
+            Statement stm = conn.createStatement();
+            stm.execute("insert into scores (score, user_id, category, difficulty, date) values (" + score + ", " + userId + ", '" + category + "', '" + difficulty + "', now())");
+            
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+        }
+    }
+    
+    public int gamesPlayedToday(int userId){
+        try{
+            int count = 0;
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("Select * from scores where user_id = " + userId + " and date = date(now())");
+            do{
+                count++;
+            }
+            while(rs.next());
+            return count;
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+            return 9;
+        }
+    }
+    
+    /*public ArrayList<String> getPastScores(int userId){
+        ArrayList<String> output = new ArrayList<String>();
+        try{
+            
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("Select score, difficulty, category from scores where user_id = " + userId);
+            
+           
+            
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+            
+        }
+    }*/
 }

@@ -35,10 +35,11 @@ public class MainScene {
     GridPane root;
     User currentUser;
     static Stage secondaryStage = new Stage();
+    DBConn connection = new DBConn();
 
     public MainScene(String username, String password) {
         
-        DBConn connection = new DBConn();
+        connection = new DBConn();
         currentUser = connection.getUser(username, password);
         
         root = new GridPane();
@@ -55,13 +56,15 @@ public class MainScene {
           
         btn.setOnAction(event ->
         {
-
-            QuizSelectionScene qs = new QuizSelectionScene(currentUser.getId());
-            
-            secondaryStage.setScene(qs.getScene());
-            secondaryStage.setTitle("Quiz Selection");
-            secondaryStage.show();
-            
+            if(currentUser.getSubscription() == 2 || connection.gamesPlayedToday(currentUser.getId()) <= 5){
+                System.out.println(connection.gamesPlayedToday(currentUser.getId()));
+                QuizSelectionScene qs = new QuizSelectionScene(currentUser.getId());
+                secondaryStage.setScene(qs.getScene());
+                secondaryStage.setTitle("Quiz Selection");
+                secondaryStage.show();
+            }else{
+                System.out.print("limit reached");
+            }
         });
          
     }
