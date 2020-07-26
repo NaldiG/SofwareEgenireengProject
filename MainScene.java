@@ -70,6 +70,20 @@ public class MainScene {
                 
             }
         });
+        
+        Button btn2 = new Button("Check subscription");
+        
+        root.add(btn2,0,1);
+          
+        btn2.setOnAction(event ->
+        {
+            
+            currentUser = connection.getUser(username, password);
+            SubscriptionScene subscriptionScene = new SubscriptionScene(currentUser.getSubscription(), currentUser.getId());
+            secondaryStage.setScene(subscriptionScene.getScene());
+            secondaryStage.setTitle("Subscription");
+            secondaryStage.show();
+        });
          
     }
     

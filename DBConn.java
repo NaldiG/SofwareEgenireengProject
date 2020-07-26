@@ -91,7 +91,6 @@ public class DBConn {
     
     public int gamesPlayedToday(int userId){
         try{
-            
             int count = 0;
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("Select * from scores where user_id = " + userId + " and date = date(now())");
@@ -100,13 +99,32 @@ public class DBConn {
             }
             while(rs.next());
             return count;
-            
         }
         catch(SQLException ex){
-            
             System.err.println(ex);
             return 9;
-            
+        }
+    }
+    
+    public void upgrade(int userId){
+        try{
+            Statement stm = conn.createStatement();
+            stm.execute("update users set subscription = 2 where id = " + userId);
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+        }
+    }
+    
+    public boolean register(String username, String password){
+        try{
+            Statement stm = conn.createStatement();
+            stm.execute("insert into users (name, password, subscription, role) values ('" + username + "', '" + password + "', 1, 1)");
+            return true;
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+            return false;
         }
     }
     
