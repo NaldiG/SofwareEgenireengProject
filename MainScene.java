@@ -50,35 +50,27 @@ public class MainScene {
         
         scene = new Scene(root, 300, 275);
         
-        Button quizBtn = new Button("Take a quiz");
+        Button btn = new Button("Take a quiz");
         
-        root.add(quizBtn,0,0);
+        root.add(btn,0,0);
           
-        quizBtn.setOnAction(event ->
+        btn.setOnAction(event ->
         {
             if(currentUser.getSubscription() == 2 || connection.gamesPlayedToday(currentUser.getId()) <= 5){
+                
                 System.out.println(connection.gamesPlayedToday(currentUser.getId()));
                 QuizSelectionScene qs = new QuizSelectionScene(currentUser.getId());
                 secondaryStage.setScene(qs.getScene());
                 secondaryStage.setTitle("Quiz Selection");
                 secondaryStage.show();
+                
             }else{
+                
                 System.out.print("limit reached");
+                
             }
         });
-        
-        Button subscriptionBtn = new Button("Check subscription");
-        
-        root.add(subscriptionBtn,0,1);
-          
-        subscriptionBtn.setOnAction(event ->
-        {
-            currentUser = connection.getUser(username, password);
-            SubscriptionScene subscriptionScene = new SubscriptionScene(currentUser.getSubscription(), currentUser.getId());
-            secondaryStage.setScene(subscriptionScene.getScene());
-            secondaryStage.setTitle("Subscription");
-            secondaryStage.show();
-        });
+         
     }
     
     public Scene getScene(){
