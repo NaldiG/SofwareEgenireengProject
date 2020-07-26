@@ -94,6 +94,38 @@ public class SoftwareEngineeringProject extends Application {
             
         });
         
+        Button btn2 = new Button("Sign up");
+        HBox hbBtn2 = new HBox(10);
+        hbBtn2.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn2.getChildren().add(btn2);
+        root.add(hbBtn2,1,5);
+        
+        btn2.setOnAction(event ->
+        {
+            
+            DBConn connection = new DBConn();
+            
+            String username = userTextField.getText();
+            String password = pwBox.getText();
+            
+            if(!username.equals("") && !password.equals("") && connection.signUp(username, password)){
+                
+                MainScene ms = new MainScene(username, password);
+                primaryStage.setTitle("Main Menu");
+                primaryStage.setScene(ms.getScene());
+                
+            }else{
+                
+                actiontarget.setFill(Color.FIREBRICK);
+                actiontarget.setText("Sign up unsuccessful");
+                
+            }
+            
+            
+            
+            
+        });
+        
         primaryStage.setTitle("Login Form");
         primaryStage.setScene(scene);
         primaryStage.show();
