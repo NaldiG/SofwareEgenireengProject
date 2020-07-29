@@ -57,7 +57,7 @@ public class QuestionScene {
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BASELINE_CENTER);
         hbBtn.getChildren().add(button);
-        root.add(button,0,6);
+        root.add(hbBtn,0,6);
         
         final Text actiontarget = new Text();
         root.add(actiontarget,0,7);

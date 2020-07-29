@@ -83,6 +83,22 @@ public class MainScene {
             secondaryStage.setScene(subscriptionScene.getScene());
             secondaryStage.setTitle("Subscription");
             secondaryStage.show();
+            
+        });
+        
+        Button btn3 = new Button("Check profile");
+        
+        root.add(btn3,0,2);
+          
+        btn3.setOnAction(event ->
+        {
+            
+            currentUser = connection.getUser(username, password);
+            ProfileScene profileScene = new ProfileScene(currentUser);
+            secondaryStage.setScene(profileScene.getScene());
+            secondaryStage.setTitle("Profile");
+            secondaryStage.show();
+            
         });
          
     }
