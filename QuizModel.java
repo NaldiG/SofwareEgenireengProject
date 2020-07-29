@@ -12,9 +12,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import javafx.scene.paint.Color;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 /**
  *
@@ -44,7 +44,7 @@ public class QuizModel {
     }
     
     public ArrayList getCategories(){
-        ArrayList<String> categoriesList = new ArrayList<String>();
+        ArrayList<String> categoriesList = new ArrayList<>();
         for(int i = 0; i < categories.length(); i++) {
                 
                 JSONObject category = categories.getJSONObject(i);
@@ -67,7 +67,7 @@ public class QuizModel {
         String multipleString = "https://opentdb.com/api.php?amount=5&category=" + categoryId + "&difficulty=" + difficulty + "&type=multiple ";
         String trueFalseString = "https://opentdb.com/api.php?amount=5&category=" + categoryId + "&difficulty=" + difficulty + "&type=boolean";
         
-        ArrayList<Question> questions = new ArrayList<Question>();
+        ArrayList<Question> questions = new ArrayList<>();
         try {
             
             InputStream is = new URL(multipleString).openStream();
@@ -80,11 +80,11 @@ public class QuizModel {
                 
                 JSONObject questionj = questionsj.getJSONObject(i);
                 JSONArray waj = questionj.getJSONArray("incorrect_answers");
-                ArrayList<String> wa= new ArrayList<String>();
+                ArrayList<String> wa= new ArrayList<>();
                 for(int j = 0; j < waj.length(); j++) {
-                    wa.add(waj.get(j).toString());
+                    wa.add(Jsoup.parse(waj.get(j).toString()).text());
                 }
-                Question question = new Question(questionj.get("question").toString(), questionj.get("correct_answer").toString(), wa);
+                Question question = new Question(Jsoup.parse(questionj.get("question").toString()).text(), Jsoup.parse(questionj.get("correct_answer").toString()).text(), wa);
                 questions.add(question);
                 
             }
@@ -106,11 +106,11 @@ public class QuizModel {
                 
                 JSONObject questionj = questionsj.getJSONObject(i);
                 JSONArray waj = questionj.getJSONArray("incorrect_answers");
-                ArrayList<String> wa= new ArrayList<String>();
+                ArrayList<String> wa= new ArrayList<>();
                 for(int j = 0; j < waj.length(); j++) {
                     wa.add(waj.get(j).toString());
                 }
-                Question question = new Question(questionj.get("question").toString(), questionj.get("correct_answer").toString(), wa);
+                Question question = new Question(Jsoup.parse(questionj.get("question").toString()).text(), questionj.get("correct_answer").toString(), wa);
                 questions.add(question);
                 
             }

@@ -91,12 +91,15 @@ public class QuestionModel {
         return output;
     }
     
-    public void checkAnswer(String answer){
-        
+    public boolean checkAnswer(String answer){
         if(answer.equals(quiz.getRightAnswer(index))){
             quiz.setScore(quiz.getScore() + 1);
+            index ++;
+            return true;
+        }else{
+            index ++;
+            return false;
         }
-        index ++;
     }
     
     public boolean hasNext(){
