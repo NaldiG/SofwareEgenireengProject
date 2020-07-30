@@ -5,6 +5,7 @@
  */
 package software.engineering.project;
 
+import java.text.DecimalFormat;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -79,9 +80,11 @@ public class PastScoresScene {
         }
         avg = avg/scores.size();
         
+        DecimalFormat df2 = new DecimalFormat("#.##");
+        
         Label labe2 = new Label("Games played today: " + Integer.toString(conn.gamesPlayedToday(userId)));
         Label labe3 = new Label("Prefered category: " + conn.prefferedCategory(userId));
-        Label labe4 = new Label("Average score" + Double.toString(avg));
+        Label labe4 = new Label("Average score: " + df2.format(avg));
         root.add(labe2, 0, 2);
         root.add(labe3, 0, 3);
         root.add(labe4, 0, 4);

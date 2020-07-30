@@ -6,19 +6,16 @@
 package software.engineering.project;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -178,7 +175,6 @@ public class DBConn {
     public ObservableList<Quiz> getPastScores(int userId){
         ObservableList<Quiz> output = FXCollections.observableArrayList();
         try{
-            Date date;
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("Select score, difficulty, category, date from scores where user_id = " + userId);
             while(rs.next()){
@@ -202,10 +198,31 @@ public class DBConn {
         return output;
     }
     
+    public ObservableList<User> getRankings(){
+        ObservableList<User> output = FXCollections.observableArrayList();
+        try{
+            int rank = 1;
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("Select name, count(score) as totalScore from users, scores where users.id = user_id group by name order by totalScore desc");
+            while(rs.next()){
+                User user = new User(rs.getString("name"), rs.getInt("totalScore"), rank);
+                output.add(user);
+                rank++;
+            }
+           
+            
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+            
+        }
+        return output;
+    }
+    
     public String prefferedCategory(int id){
         try{
             Statement stm = conn.createStatement();
-            ResultSet rs = stm.executeQuery("select category, count(*) as frequency from scores group by category order by frequency desc limit 1");
+            ResultSet rs = stm.executeQuery("select category, count(*) as frequency from scores where user_id = " + id + " group by category order by frequency desc limit 1");
             rs.next();
             return rs.getString("category");
         }

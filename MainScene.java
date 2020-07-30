@@ -56,7 +56,7 @@ public class MainScene {
           
         btn.setOnAction(event ->
         {
-            if(currentUser.getSubscription() == 2 || connection.gamesPlayedToday(currentUser.getId()) <= 5){
+            if(currentUser.getSubscription() == 2 || connection.gamesPlayedToday(currentUser.getId()) < 5){
                 
                 System.out.println(connection.gamesPlayedToday(currentUser.getId()));
                 QuizSelectionScene qs = new QuizSelectionScene(currentUser.getId());
@@ -115,6 +115,20 @@ public class MainScene {
             
         });
          
+        Button btn5 = new Button("View rankings");
+        
+        root.add(btn5,0,4);
+          
+        btn5.setOnAction(event ->
+        {
+            
+            RankingScene rankingScene = new RankingScene(currentUser.getUsername());
+            secondaryStage.setScene(rankingScene.getScene());
+            secondaryStage.setTitle("Rankings");
+            secondaryStage.show();
+            
+        });
+        
     }
     
     public Scene getScene(){

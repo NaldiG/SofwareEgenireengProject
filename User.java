@@ -12,10 +12,18 @@ import javafx.scene.image.Image;
  * @author ASUS
  */
 public class User {
-    private int id, subscription, role;
+    private int id, subscription, role, score, rank;
     private String username, password, quote;
     private Image avatar;
+    
+    public int getScore() {
+        return score;
+    }
 
+    public int getRank() {
+        return rank;
+    }
+    
     public Image getAvatar() {
         return avatar;
     }
@@ -57,6 +65,12 @@ public class User {
         this.password = password;
         this.quote = quote;
         this.avatar = avatar;
+    }
+    
+    public User(String username, int score, int rank) {
+        this.username = username;
+        this.score = score;
+        this.rank = rank;
     }
     
     public String getSubscriptionName(){
