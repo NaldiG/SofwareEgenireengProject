@@ -6,11 +6,13 @@
 package software.engineering.project;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +21,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
@@ -55,10 +59,14 @@ public class DBConn {
             ResultSet rs = stm.executeQuery("Select * from users where name = '" + username + "' and password = '" + password + "'");
             rs.next();
             Blob blob = rs.getBlob("avatar");
-            InputStream in = blob.getBinaryStream();
-            BufferedImage image = ImageIO.read(in);
-            Image avatar = SwingFXUtils.toFXImage(image, null);
-            return new User(rs.getInt("id"), rs.getInt("subscription"),rs.getInt("role"), rs.getString("name"), rs.getString("password"), rs.getString("quote"), avatar);
+            if(blob == null){
+                return new User(rs.getInt("id"), rs.getInt("subscription"),rs.getInt("role"), rs.getString("name"), rs.getString("password"), rs.getString("quote"), new Image("Default.png"));
+            }else{
+                InputStream in = blob.getBinaryStream();
+                BufferedImage image = ImageIO.read(in);
+                Image avatar = SwingFXUtils.toFXImage(image, null);
+                return new User(rs.getInt("id"), rs.getInt("subscription"),rs.getInt("role"), rs.getString("name"), rs.getString("password"), rs.getString("quote"), avatar);
+            }
             
         }
         catch(SQLException ex){
@@ -111,10 +119,10 @@ public class DBConn {
             int count = 0;
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("Select * from scores where user_id = " + userId + " and date = date(now())");
-            do{
+            
+            while(rs.next()){
                 count++;
             }
-            while(rs.next());
             return count;
         }
         catch(SQLException ex){
@@ -136,7 +144,7 @@ public class DBConn {
     public boolean register(String username, String password){
         try{
             Statement stm = conn.createStatement();
-            stm.execute("insert into users (name, password, subscription, role) values ('" + username + "', '" + password + "', 1, 1)");
+            stm.execute("insert into users (name, password, subscription, role) values ('" + username + "', '" + password + "' , 1, 1)");
             return true;
         }
         catch(SQLException ex){
@@ -167,13 +175,23 @@ public class DBConn {
         }
     }
     
-    /*public ArrayList<String> getPastScores(int userId){
-        ArrayList<String> output = new ArrayList<String>();
+    public ObservableList<Quiz> getPastScores(int userId){
+        ObservableList<Quiz> output = FXCollections.observableArrayList();
         try{
-            
+            Date date;
             Statement stm = conn.createStatement();
-            ResultSet rs = stm.executeQuery("Select score, difficulty, category from scores where user_id = " + userId);
-            
+            ResultSet rs = stm.executeQuery("Select score, difficulty, category, date from scores where user_id = " + userId);
+            while(rs.next()){
+                Quiz quiz = new Quiz(rs.getString("difficulty"), rs.getString("category"), null);
+                quiz.setScore(rs.getInt("score"));
+                if(rs.getDate("date") == null){
+                    quiz.setDate("");
+                }else{
+                    quiz.setDate(rs.getDate("date").toString());
+                }
+                
+                output.add(quiz);
+            }
            
             
         }
@@ -181,5 +199,19 @@ public class DBConn {
             System.err.println(ex);
             
         }
-    }*/
+        return output;
+    }
+    
+    public String prefferedCategory(int id){
+        try{
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("select category, count(*) as frequency from scores group by category order by frequency desc limit 1");
+            rs.next();
+            return rs.getString("category");
+        }
+        catch(SQLException ex){
+            System.err.println(ex);
+            return null;
+        }
+    }
 }

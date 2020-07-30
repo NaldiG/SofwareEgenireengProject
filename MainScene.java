@@ -100,6 +100,20 @@ public class MainScene {
             secondaryStage.show();
             
         });
+        
+        Button btn4 = new Button("View quiz history");
+        
+        root.add(btn4,0,3);
+          
+        btn4.setOnAction(event ->
+        {
+            
+            PastScoresScene pastScoresScene = new PastScoresScene(currentUser.getId());
+            secondaryStage.setScene(pastScoresScene.getScene());
+            secondaryStage.setTitle("Past activity");
+            secondaryStage.show();
+            
+        });
          
     }
     

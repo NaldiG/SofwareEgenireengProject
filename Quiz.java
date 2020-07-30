@@ -15,6 +15,15 @@ public class Quiz {
     String category, difficulty;
     ArrayList<Question> questions;
     int score = 0;
+    String date = "";
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public Quiz(String category, String difficulty, ArrayList<Question> questions) {
         this.category = category;
